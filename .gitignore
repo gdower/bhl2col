@@ -6,6 +6,9 @@
 *.dylib
 *.json
 
+# Don't ignore test data
+!testdata/*.json
+
 # Test binary, built with `go test -c`
 *.test
 
