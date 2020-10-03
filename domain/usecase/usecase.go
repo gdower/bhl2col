@@ -19,9 +19,6 @@ type Plugger interface {
 // Referencer allows us to inverse dependency to BHLnames. It provides signatures
 // to BHLnames methods needed for functionality of BHLinker.
 type Referencer interface {
-	// RefsStream takes a stream of name-strings, returns back a stream of
-	// references found in BHL for the names-strigns.
-	RefsStream(chIn <-chan string, chOut chan<- *refs.RefsResult)
 	// Refs takes a name-string and returns an BHLnames' output that contains
 	// found BHL references for the name-string.
 	Refs(string) (*refs.Output, error)

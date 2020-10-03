@@ -1,121 +1,110 @@
 package linker
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"path/filepath"
 	"sync"
 	"testing"
 
-	"github.com/gnames/bhlnames/refs"
+	"github.com/gdower/bhlinker/domain/entity"
 	"github.com/gnames/gnames/lib/encode"
 )
 
-type MockReferencer struct{}
-
-func (mr MockReferencer) Refs(name string) (*refs.Output, error) {
-	mocks := loadOutputMocks()
-	if res, ok := mocks[name]; ok {
-		return res, nil
-	}
-	return nil, fmt.Errorf("Unknown name '%s'", name)
-}
-
-func (mr MockReferencer) RefsStream(chIn <-chan string, chOut chan<- *refs.RefsResult) {
-	mocks := loadOutputMocks()
-	mocksStream := make(map[string]*refs.RefsResult)
-	for k, v := range mocks {
-		mocksStream[k] = &refs.RefsResult{
-			Output: v,
-			Error:  nil,
-		}
-	}
-	var wg sync.WaitGroup
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		for name := range chIn {
-			if res, ok := mocksStream[name]; ok {
-				chOut <- res
-			} else {
-				chOut <- &refs.RefsResult{Error: fmt.Errorf("Unknown name '%s'", name)}
-			}
-		}
-	}()
-	wg.Wait()
-	close(chOut)
-}
-
-func loadNamesMock() []string {
-	mocks := loadOutputMocks()
-	res := make([]string, len(mocks))
-	count := 0
-	for k, _ := range mocks {
-		res[count] = k
-		count++
-	}
-	return res
-}
-
-func loadOutputMocks() map[string]*refs.Output {
+func loadInputMock() (map[string]entity.Input, error) {
 	enc := encode.GNjson{}
-	var res map[string]*refs.Output
-	path := filepath.Join("..", "testdata", "referencer-mock.json")
+	var res map[string]entity.Input
+	path := filepath.Join("..", "testdata", "input-mock.json")
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
-		log.Fatal(err)
+		return res, err
 	}
 	err = enc.Decode(data, &res)
 	if err != nil {
-		log.Fatal(err)
+		return res, err
 	}
-	return res
+	return res, nil
 }
 
-func TestRefs(t *testing.T) {
-	mr := MockReferencer{}
-	data, _ := mr.Refs("something")
-	if data != nil {
-		t.Error("it should not find name 'somthing'")
-	}
-	data, err := mr.Refs("Licaria simulans")
+func loadOutputMock() (map[string]entity.Output, error) {
+	enc := encode.GNjson{}
+	var res map[string]entity.Output
+	path := filepath.Join("..", "testdata", "output-mock.json")
+	data, err := ioutil.ReadFile(path)
 	if err != nil {
-		t.Error("Error for 'Licaria simulans' should be nil")
+		return res, err
 	}
-	if data.NameString != "Licaria simulans" {
-		t.Errorf("Wrong name '%s'", data.NameString)
+	err = enc.Decode(data, &res)
+	if err != nil {
+		return res, err
 	}
-	if data.ReferenceNumber != 5 {
-		t.Errorf("Wrong number of refs '%d'", len(data.References))
+	return res, nil
+}
+
+func data() (Linker, map[string]entity.Input, map[string]entity.Output) {
+	inputs, err := loadInputMock()
+	if err != nil {
+		log.Fatalf("cannot load mock inputs: %s", err)
+	}
+	outputs, err := loadOutputMock()
+	if err != nil {
+		log.Fatalf("cannot load mock outputs: %s", err)
+	}
+
+	mr := MockReferencer{}
+	linker := NewLinker(mr)
+	return linker, inputs, outputs
+}
+
+func TestGetLink(t *testing.T) {
+	l, inputs, outputs := data()
+	for k, v := range inputs {
+		out, err := l.GetLink(v)
+		if err != nil {
+			t.Errorf("cannot get link for '%s': %s", k, err)
+		}
+		if out.Score.Overall != outputs[k].Score.Overall {
+			t.Errorf("scores do not match for %s: %0.2f vs %0.2f",
+				k, out.Score.Overall, outputs[k].Score.Overall)
+		}
+		if out.BHLlink.Link != outputs[k].BHLlink.Link {
+			t.Errorf("BHL links do not match for %s: %s vs %s",
+				k, out.BHLlink.Link, outputs[k].BHLlink.Link)
+		}
 	}
 }
 
-func TestRefsStream(t *testing.T) {
-	chIn := make(chan string)
-	chOut := make(chan *refs.RefsResult)
+func TestGetLinks(t *testing.T) {
+	l, inputs, outputs := data()
+	chIn := make(chan entity.Input)
+	chOut := make(chan entity.Output)
 	var wg sync.WaitGroup
 	wg.Add(1)
-	mr := MockReferencer{}
 
 	go func() {
-		for _, name := range loadNamesMock() {
-			chIn <- name
+		for _, v := range inputs {
+			chIn <- v
 		}
 		close(chIn)
 	}()
+
 	go func() {
 		defer wg.Done()
-
-		for res := range chOut {
-			if res == nil {
-				t.Error("Refs stream result is empty")
+		for output := range chOut {
+			name := output.Name.Name
+			if output.Error != nil {
+				t.Errorf("cannot get link for '%s': %s", name, output.Error)
 			}
-			if len(res.Output.References) == 0 {
-				t.Errorf("No references for %s", res.Output.NameString)
+			if output.Score.Overall != outputs[name].Score.Overall {
+				t.Errorf("scores do not match for %s: %0.2f vs %0.2f",
+					name, output.Score.Overall, outputs[name].Score.Overall)
+			}
+			if output.BHLlink.Link != outputs[name].BHLlink.Link {
+				t.Errorf("BHL links do not match for %s: %s vs %s",
+					name, output.BHLlink.Link, outputs[name].BHLlink.Link)
 			}
 		}
 	}()
-	mr.RefsStream(chIn, chOut)
+	l.GetLinks(chIn, chOut)
 	wg.Wait()
 }
