@@ -11,7 +11,7 @@ type Plugger interface {
 	// for the name-string and returns back BHL references filtered by scoring algorithms.
 	// The references are the best attempt to find first nomenclatural descriptions
 	// for a names in BHL.
-	GetLink(input entity.Input) entity.Output
+	GetLink(input entity.Input) (entity.Output, error)
 	// GetLinks takes a stream of name-strings and returns a stream of references in BHL.
 	GetLinks(chIn <-chan entity.Input, chOut chan<- entity.Output)
 }

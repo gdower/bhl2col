@@ -16,7 +16,9 @@ func NewBHLinker() BHLinker {
 	}
 }
 
-func (l BHLinker) GetLink(input entity.Input) entity.Output {
+//GetLink takes an input with a name-string and its reference data and
+// returns back the best match of a reference from BHL.
+func (l BHLinker) GetLink(input entity.Input) (entity.Output, error) {
 	return l.Plugger.GetLink(input)
 }
 

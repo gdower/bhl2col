@@ -1,0 +1,170 @@
+{
+  "Hamotus gracilicornis": {
+    "id": 3,
+    "annotNomen": "SP_NOV",
+    "editDistance": 0,
+    "error": null,
+    "name": {
+      "name": "Hamotus gracilicornis",
+      "authors": "",
+      "year": "",
+      "nameType": 1
+    },
+    "linkBHL": {
+      "link": "https://www.biodiversitylibrary.org/page/39474849",
+      "pageImageLink": ""
+    },
+    "score": {
+      "overall": 1.7,
+      "annot": 1,
+      "year": 0.7
+    }
+  },
+  "Pseudotrochalus niger": {
+    "id": 4,
+    "annotNomen": "SP_NOV",
+    "editDistance": 0,
+    "error": null,
+    "name": {
+      "name": "Pseudotrochalus niger",
+      "authors": "",
+      "year": "",
+      "nameType": 1
+    },
+    "linkBHL": {
+      "link": "https://www.biodiversitylibrary.org/page/27799331",
+      "pageImageLink": ""
+    },
+    "score": {
+      "overall": 1,
+      "annot": 1,
+      "year": 1
+    }
+  },
+  "Orthocarpus attenuatus": {
+    "id": 5,
+    "annotNomen": "SP_NOV",
+    "editDistance": 0,
+    "error": null,
+    "name": {
+      "name": "Orthocarpus attenuatus",
+      "authors": "",
+      "year": "",
+      "nameType": 1
+    },
+    "linkBHL": {
+      "link": "https://www.biodiversitylibrary.org/page/54558285",
+      "pageImageLink": ""
+    },
+    "score": {
+      "overall": 1.3429999,
+      "annot": 1,
+      "year": 0.343
+    }
+  },
+  "Cyathea aureonitens": {
+    "id": 6,
+    "annotNomen": "SP_NOV",
+    "editDistance": 0,
+    "error": null,
+    "name": {
+      "name": "Cyathea aureonitens",
+      "authors": "",
+      "year": "",
+      "nameType": 1
+    },
+    "linkBHL": {
+      "link": "https://www.biodiversitylibrary.org/page/33641910",
+      "pageImageLink": ""
+    },
+    "score": {
+      "overall": 1.2401,
+      "annot": 1,
+      "year": 0.2401
+    }
+  },
+  "Licaria simulans": {
+    "id": 7,
+    "annotNomen": "SP_NOV",
+    "editDistance": 0,
+    "error": null,
+    "name": {
+      "name": "Licaria simulans",
+      "authors": "",
+      "year": "",
+      "nameType": 1
+    },
+    "linkBHL": {
+      "link": "https://www.biodiversitylibrary.org/page/44052956",
+      "pageImageLink": ""
+    },
+    "score": {
+      "overall": 1,
+      "annot": 1,
+      "year": 1
+    }
+  },
+  "Anthoceros muscoides": {
+    "id": 8,
+    "annotNomen": "SP_NOV",
+    "editDistance": 0,
+    "error": null,
+    "name": {
+      "name": "Anthoceros muscoides",
+      "authors": "",
+      "year": "",
+      "nameType": 1
+    },
+    "linkBHL": {
+      "link": "https://www.biodiversitylibrary.org/page/33732863",
+      "pageImageLink": ""
+    },
+    "score": {
+      "overall": 0.7,
+      "annot": 1,
+      "year": 0.7
+    }
+  },
+  "Achenium lusitanicum": {
+    "id": 1,
+    "annotNomen": "SP_NOV",
+    "editDistance": 0,
+    "error": null,
+    "name": {
+      "name": "Achenium lusitanicum",
+      "authors": "",
+      "year": "",
+      "nameType": 1
+    },
+    "linkBHL": {
+      "link": "https://www.biodiversitylibrary.org/page/11978375",
+      "pageImageLink": ""
+    },
+    "score": {
+      "overall": 2,
+      "annot": 1,
+      "year": 1
+    }
+  },
+  "Sagenia longicruris": {
+    "id": 2,
+    "annotNomen": "SP_NOV",
+    "editDistance": 0,
+    "error": null,
+    "name": {
+      "name": "Sagenia longicruris",
+      "authors": "",
+      "year": "",
+      "nameType": 1
+    },
+    "linkBHL": {
+      "link": "https://www.biodiversitylibrary.org/page/4530730",
+      "pageImageLink": ""
+    },
+    "score": {
+      "overall": 2,
+      "annot": 1,
+      "year": 1
+    }
+  }
+}

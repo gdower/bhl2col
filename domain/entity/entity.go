@@ -7,15 +7,6 @@ const (
 	CanonicalForm
 )
 
-type AnnotNomen int
-
-const (
-	NoAnnot AnnotNomen = iota
-	SpNov
-	CombNov
-	SubspNov
-)
-
 func (st NameType) String() string {
 	if int(st) == 0 {
 		return "FullString"
@@ -24,44 +15,44 @@ func (st NameType) String() string {
 	}
 }
 
+type Input struct {
+	ID        int `json:"id"`
+	Name      `json:"name"`
+	Reference `json:"reference"`
+}
+
 type Name struct {
-	Name    string
-	Authors string
-	Year    int
-	NameType
+	Name     string `json:"name"`
+	Authors  string `json:"authors"`
+	Year     string `json:"year"`
+	NameType `json:"nameType"`
 }
 
 type Reference struct {
-	Authors string
-	Journal string
-	Volume  string
-	Pages   string
-	Year    int
-}
-
-type BHLink struct {
-	Link          string
-	PageImageLink string
-}
-
-type Score struct {
-	Overall float32
-	Annot   float32
-	Year    float32
-}
-
-type Input struct {
-	ID int
-	Name
-	Reference
+	Authors string `json:"authors"`
+	Journal string `json:"journal"`
+	Volume  string `json:"volume"`
+	Pages   string `json:"pages"`
+	Year    string `json:"year"`
 }
 
 type Output struct {
-	InputID int
-	Name
-	BHLink
-	Score
-	AnnotNomen
-	EditDistance uint
-	Error        error
+	InputID      int    `json:"id"`
+	AnnotNomen   string `json:"annotNomen"`
+	EditDistance int    `json:"editDistance"`
+	Error        error  `json:"error"`
+	Name         `json:"name"`
+	BHLlink      `json:"linkBHL"`
+	Score        `json:"score"`
+}
+
+type BHLlink struct {
+	Link          string `json:"link"`
+	PageImageLink string `json:"pageImageLink"`
+}
+
+type Score struct {
+	Overall float32 `json:"overall"`
+	Annot   float32 `json:"annot"`
+	Year    float32 `json:"year"`
 }
