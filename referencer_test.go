@@ -1,20 +1,19 @@
-package linker
+package bhlinker
 
 import (
 	"fmt"
 	"io/ioutil"
 	"log"
 	"path/filepath"
-	"sync"
 	"testing"
 
-	"github.com/gnames/bhlnames/refs"
+	bhln "github.com/gnames/bhlnames/domain/entity"
 	"github.com/gnames/gnames/lib/encode"
 )
 
 type MockReferencer struct{}
 
-func (mr MockReferencer) Refs(name string) (*refs.Output, error) {
+func (mr MockReferencer) Refs(name string) (*bhln.Output, error) {
 	mocks := loadOutputMocks()
 	if res, ok := mocks[name]; ok {
 		return res, nil
@@ -26,17 +25,17 @@ func loadNamesMock() []string {
 	mocks := loadOutputMocks()
 	res := make([]string, len(mocks))
 	count := 0
-	for k, _ := range mocks {
+	for k := range mocks {
 		res[count] = k
 		count++
 	}
 	return res
 }
 
-func loadOutputMocks() map[string]*refs.Output {
+func loadOutputMocks() map[string]*bhln.Output {
 	enc := encode.GNjson{}
-	var res map[string]*refs.Output
-	path := filepath.Join("..", "testdata", "referencer-mock.json")
+	var res map[string]*bhln.Output
+	path := filepath.Join("testdata", "referencer-mock.json")
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
 		log.Fatal(err)

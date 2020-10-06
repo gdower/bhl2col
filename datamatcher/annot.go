@@ -1,33 +1,33 @@
 package datamatcher
 
 import (
-	"github.com/gnames/bhlnames/refs"
+	bhln "github.com/gnames/bhlnames/domain/entity"
 	"gitlab.com/gogna/gnparser"
 )
 
-type Annot int
+type annotation int
 
 const (
-	NoAnnot Annot = iota
-	SpNov
-	SubsNov
-	CombNov
+	noAnnot annotation = iota
+	spNov
+	subsNov
+	combNov
 )
 
-func NewAnnot(annot string) Annot {
-	annotations := map[string]Annot{
-		"NO_ANNOT":  NoAnnot,
-		"SP_NOV":    SpNov,
-		"SUBSP_NOV": SubsNov,
-		"COMB_NOV":  CombNov,
+func NewAnnot(annot string) annotation {
+	annotations := map[string]annotation{
+		"NO_ANNOT":  noAnnot,
+		"SP_NOV":    spNov,
+		"SUBSP_NOV": subsNov,
+		"COMB_NOV":  combNov,
 	}
 	if a, ok := annotations[annot]; ok {
 		return a
 	}
-	return NoAnnot
+	return noAnnot
 }
 
-func (a Annot) String() string {
+func (a annotation) String() string {
 	switch int(a) {
 	case 1:
 		return "SP_NOV"
@@ -62,21 +62,14 @@ func (a Annot) String() string {
 // f:sp v:ssp = 0.1
 // f:gen v:gen = 0
 
-func cardinality(ref *refs.Reference) (int32, int32) {
-	gnp := gnparser.NewGNparser()
-	n := gnp.ParseToObject(ref.Name)
-	mn := gnp.ParseToObject(ref.MatchName)
-	return n.Cardinality, mn.Cardinality
-}
-
-func AnnotScore(ref *refs.Reference) float32 {
+func AnnotScore(ref *bhln.Reference) float32 {
 	annot := NewAnnot(ref.AnnotNomen)
 	cardName, cardMatchName := cardinality(ref)
 	if cardName == 0 || cardMatchName == 0 {
 		return 0.0
 	}
 	switch annot {
-	case SpNov:
+	case spNov:
 		switch {
 		case cardName == 2 && cardMatchName == 2:
 			return 1.0
@@ -87,7 +80,7 @@ func AnnotScore(ref *refs.Reference) float32 {
 		default:
 			return 0
 		}
-	case SubsNov:
+	case subsNov:
 		switch {
 		case cardName == 3 && cardMatchName == 3:
 			return 1.0
@@ -98,7 +91,7 @@ func AnnotScore(ref *refs.Reference) float32 {
 		default:
 			return 0
 		}
-	case CombNov:
+	case combNov:
 		switch {
 		case cardName == 2 && cardMatchName == 2:
 			return 1.0
@@ -107,8 +100,15 @@ func AnnotScore(ref *refs.Reference) float32 {
 		case cardName == 2 && cardMatchName == 3:
 			return 0.6
 		}
-	case NoAnnot:
+	case noAnnot:
 		return 0.0
 	}
 	return 0
+}
+
+func cardinality(ref *bhln.Reference) (int32, int32) {
+	gnp := gnparser.NewGNparser()
+	n := gnp.ParseToObject(ref.Name)
+	mn := gnp.ParseToObject(ref.MatchName)
+	return n.Cardinality, mn.Cardinality
 }

@@ -4,14 +4,16 @@ import (
 	"math"
 	"testing"
 
-	"github.com/gnames/bhlnames/refs"
+	bhln "github.com/gnames/bhlnames/domain/entity"
 )
 
 func TestYearNear(t *testing.T) {
+	// yearNear does not check for validness of the year, it is done in
+	// YearScore function.
 	years := [][]int{{2001, 2000}, {2000, 2001}, {2000, 2000}, {2000, 2002}, {2000, 2003}, {-1, -1}, {3000, 3001}}
 	scores := []float32{0.7, 0.7, 1, 0.49, 0.343, 0, 0}
 	for i, v := range years {
-		score := YearNear(v[0], v[1])
+		score := yearNear(v[0], v[1])
 		if score != scores[i] {
 			t.Errorf("Wrong score for YearNear(%d, %d): %f", v[0], v[1], score)
 		}
@@ -50,7 +52,7 @@ func TestYearBetween(t *testing.T) {
 	}
 
 	for _, d := range dataArray {
-		score := YearBetween(d.values[0], d.values[1], d.values[2])
+		score := yearBetween(d.values[0], d.values[1], d.values[2])
 		if math.Abs(float64(score)-float64(d.score)) > 0.0001 {
 			t.Errorf("Wrong score for YearsBetween(%d, %d, %d): %f %f",
 				d.values[0], d.values[1], d.values[2], d.score, score)
@@ -90,7 +92,7 @@ func TestYearScore(t *testing.T) {
 	}
 
 	for _, d := range dataArray {
-		testRef := refs.Reference{
+		testRef := bhln.Reference{
 			YearType:       d.refType,
 			YearAggr:       d.refYears[0],
 			ItemYearStart:  d.refYears[1],

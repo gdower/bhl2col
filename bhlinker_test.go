@@ -1,4 +1,4 @@
-package linker
+package bhlinker
 
 import (
 	"io/ioutil"
@@ -14,7 +14,7 @@ import (
 func loadInputMock() (map[string]entity.Input, error) {
 	enc := encode.GNjson{}
 	var res map[string]entity.Input
-	path := filepath.Join("..", "testdata", "input-mock.json")
+	path := filepath.Join("testdata", "input-mock.json")
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
 		return res, err
@@ -29,7 +29,7 @@ func loadInputMock() (map[string]entity.Input, error) {
 func loadOutputMock() (map[string]entity.Output, error) {
 	enc := encode.GNjson{}
 	var res map[string]entity.Output
-	path := filepath.Join("..", "testdata", "output-mock.json")
+	path := filepath.Join("testdata", "output-mock.json")
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
 		return res, err
@@ -41,7 +41,7 @@ func loadOutputMock() (map[string]entity.Output, error) {
 	return res, nil
 }
 
-func data() (Linker, map[string]entity.Input, map[string]entity.Output) {
+func data() (BHLinker, map[string]entity.Input, map[string]entity.Output) {
 	inputs, err := loadInputMock()
 	if err != nil {
 		log.Fatalf("cannot load mock inputs: %s", err)
@@ -52,7 +52,7 @@ func data() (Linker, map[string]entity.Input, map[string]entity.Output) {
 	}
 
 	mr := MockReferencer{}
-	linker := NewLinker(mr)
+	linker := NewBHLinker(mr, 4)
 	return linker, inputs, outputs
 }
 
@@ -67,9 +67,9 @@ func TestGetLink(t *testing.T) {
 			t.Errorf("scores do not match for %s: %0.2f vs %0.2f",
 				k, out.Score.Overall, outputs[k].Score.Overall)
 		}
-		if out.BHLlink.Link != outputs[k].BHLlink.Link {
+		if out.BHLref.URL != outputs[k].BHLref.URL {
 			t.Errorf("BHL links do not match for %s: %s vs %s",
-				k, out.BHLlink.Link, outputs[k].BHLlink.Link)
+				k, out.BHLref.URL, outputs[k].BHLref.URL)
 		}
 	}
 }
@@ -91,7 +91,7 @@ func TestGetLinks(t *testing.T) {
 	go func() {
 		defer wg.Done()
 		for output := range chOut {
-			name := output.Name.Name
+			name := output.InputName.Canonical
 			if output.Error != nil {
 				t.Errorf("cannot get link for '%s': %s", name, output.Error)
 			}
@@ -99,9 +99,9 @@ func TestGetLinks(t *testing.T) {
 				t.Errorf("scores do not match for %s: %0.2f vs %0.2f",
 					name, output.Score.Overall, outputs[name].Score.Overall)
 			}
-			if output.BHLlink.Link != outputs[name].BHLlink.Link {
+			if output.BHLref.URL != outputs[name].BHLref.URL {
 				t.Errorf("BHL links do not match for %s: %s vs %s",
-					name, output.BHLlink.Link, outputs[name].BHLlink.Link)
+					name, output.BHLref.URL, outputs[name].BHLref.URL)
 			}
 		}
 	}()

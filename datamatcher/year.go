@@ -4,17 +4,41 @@ import (
 	"math"
 	"time"
 
-	"github.com/gnames/bhlnames/refs"
+	bhln "github.com/gnames/bhlnames/domain/entity"
 )
 
-func InvalidYear(year int) bool {
+func YearScore(yearInput int, ref *bhln.Reference) float32 {
+	var score float32 = 1
+	yearPart, itemYearStart, itemYearEnd, titleYearStart, titleYearEnd := getRefYears(ref)
+
+	if yearPart > 0 {
+		return score * yearNear(yearInput, yearPart)
+	}
+	var score1, score2 float32
+	item := int(itemYearStart+itemYearEnd) > 0
+	title := int(titleYearStart+titleYearEnd) > 0
+	if item || (!item && !title) {
+		score1 = yearBetween(yearInput, itemYearStart, itemYearEnd)
+	}
+	if title {
+		score2 = yearBetween(yearInput, titleYearStart, titleYearEnd)
+	}
+
+	if score1 > score2 {
+		return score1
+	}
+	return score2
+}
+
+func invalidYear(year int) bool {
 	return year < 1740 || year > (time.Now().Year()+2)
 }
 
-func YearNear(year1, year2 int) float32 {
-	if InvalidYear(year1) {
+func yearNear(year1, year2 int) float32 {
+	if invalidYear(year1) {
 		return 0
 	}
+
 	coef := 0.7
 	dif := math.Abs(float64(year1) - float64(year2))
 	if dif > 10 {
@@ -23,8 +47,8 @@ func YearNear(year1, year2 int) float32 {
 	return float32(math.Pow(float64(coef), dif))
 }
 
-func YearBetween(year, yearMin, yearMax int) float32 {
-	if InvalidYear(year) {
+func yearBetween(year, yearMin, yearMax int) float32 {
+	if invalidYear(year) {
 		return 0
 	}
 	if yearMin == 0 && yearMax == 0 {
@@ -36,40 +60,17 @@ func YearBetween(year, yearMin, yearMax int) float32 {
 	}
 
 	if yearMax == 0 {
-		return YearNear(year, yearMin)
+		return yearNear(year, yearMin)
 	}
 
 	if !(year <= yearMax && year >= yearMin) {
 		return 0
 	}
 
-	return YearNear(year, yearMax)
+	return yearNear(year, yearMax)
 }
 
-func YearScore(year int, ref *refs.Reference) float32 {
-	var score float32 = 1
-	YearPart, ItemYearStart, ItemYearEnd, TitleYearStart, TitleYearEnd := getRefYears(ref)
-
-	if YearPart > 0 {
-		return score * YearNear(year, YearPart)
-	}
-	var score1, score2 float32
-	item := int(ItemYearStart+ItemYearEnd) > 0
-	title := int(TitleYearStart+TitleYearEnd) > 0
-	if item || (!item && !title) {
-		score1 = YearBetween(year, ItemYearStart, ItemYearEnd)
-	}
-	if title {
-		score2 = YearBetween(year, TitleYearStart, TitleYearEnd)
-	}
-
-	if score1 > score2 {
-		return score1
-	}
-	return score2
-}
-
-func getRefYears(ref *refs.Reference) (int, int, int, int, int) {
+func getRefYears(ref *bhln.Reference) (int, int, int, int, int) {
 	var yearPart int
 	if ref.YearType == "Part" {
 		yearPart = ref.YearAggr

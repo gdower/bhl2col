@@ -1,60 +1,96 @@
 package linker
 
 import (
-	"sync"
+	"strconv"
 
+	"github.com/gdower/bhlinker/datamatcher"
 	"github.com/gdower/bhlinker/domain/entity"
-	"github.com/gdower/bhlinker/domain/usecase"
+	bhln "github.com/gnames/bhlnames/domain/entity"
 )
 
-// Linker is an implementation of usecase/Plugger interface.
-type Linker struct {
-	usecase.Referencer
-	JobsNum int
+func BestMatchBHL(input entity.Input, bhlRefs []*bhln.Reference) entity.Output {
+	year := input.Reference.Year
+	if year == "" {
+		year = input.Name.Year
+	}
+	refBest, score := bestBHLReference(bhlRefs, year)
+	return output(input, refBest, score)
 }
 
-func NewLinker(r usecase.Referencer) Linker {
-	return Linker{Referencer: r, JobsNum: 4}
+func bestBHLReference(bhlRefs []*bhln.Reference, year string) (*bhln.Reference, entity.Score) {
+	refYear, scoreYear := matchYear(year, bhlRefs)
+	refAnnot, scoreAnnot, scoreYearComposite := matchAnnot(year, bhlRefs)
+	scoreComposite := scoreAnnot + scoreYearComposite
+	if scoreYear+scoreComposite == 0 {
+		return nil, entity.Score{}
+	}
+	refBest := refYear
+	scoreBest := scoreYear
+	if refBest == nil {
+		refBest = refAnnot
+		scoreBest = scoreComposite
+	} else if refAnnot != nil {
+		if scoreComposite > 0 && refBest.PageID != refAnnot.PageID {
+			if scoreYear < scoreComposite {
+				refBest = refAnnot
+				scoreBest = scoreComposite
+				scoreYear = scoreYearComposite
+			}
+		}
+	}
+	score := entity.Score{Overall: scoreBest, Annot: scoreAnnot, Year: scoreYear}
+	return refBest, score
 }
 
-// GetLink takes name-string with its reference data. The reference data is
-// expected to be a paper with original nomenclatural description of the
-// the name-string. The method tries to find the best BHL match to that
-// reference and sends back a BHL reference metadata as well as URL link to
-// the reference.
-func (l Linker) GetLink(input entity.Input) (entity.Output, error) {
-	name := input.Name.Name
-	refsBHL, err := l.Refs(name)
+func output(input entity.Input, refBest *bhln.Reference, score entity.Score) entity.Output {
+	if refBest == nil {
+		return entity.Output{InputID: input.ID, InputName: input.Name}
+	}
+
+	res := entity.Output{
+		InputID:      input.ID,
+		InputName:    input.Name,
+		BHLref:       refBest,
+		Score:        score,
+		AnnotNomen:   refBest.AnnotNomen,
+		EditDistance: refBest.EditDistance,
+	}
+	return res
+}
+
+func matchYear(refYear string, refs []*bhln.Reference) (*bhln.Reference, float32) {
+	yr, err := strconv.Atoi(refYear)
 	if err != nil {
-		return entity.Output{}, err
+		yr = 0
 	}
-	return bestMatchBHL(input, refsBHL.References), nil
+	var refBest *bhln.Reference
+	var score, scoreBest float32
+	for _, r := range refs {
+		score = datamatcher.YearScore(yr, r)
+		if score > scoreBest {
+			refBest = r
+			scoreBest = score
+		}
+	}
+	return refBest, scoreBest
 }
 
-// GetLinks takes a stream of name-strings with their reference data. The
-// reference data for each name-string is expected to be a paper with original
-// nomenclatural description of the the name-string.  The method tries to find
-// the best BHL match to that reference and sends back a BHL reference metadata
-// as well as URL link to the reference.
-//
-// The streams are implemented as channels. This approach allows to work with
-// inputs of any size.
-func (l Linker) GetLinks(chIn <-chan entity.Input, chOut chan<- entity.Output) {
-	var wg sync.WaitGroup
-	wg.Add(l.JobsNum)
-	for i := 0; i < l.JobsNum; i++ {
-		go l.worker(chIn, chOut, &wg)
+func matchAnnot(refYear string, refs []*bhln.Reference) (*bhln.Reference, float32, float32) {
+	var refBest *bhln.Reference
+	var scoreAnnot, score float32
+	for _, r := range refs {
+		score = datamatcher.AnnotScore(r)
+		if score > scoreAnnot {
+			refBest = r
+			scoreAnnot = score
+		}
 	}
-	wg.Wait()
-	close(chOut)
-}
-
-func (l Linker) worker(chIn <-chan entity.Input, chOut chan<- entity.Output,
-	wg *sync.WaitGroup) {
-	defer wg.Done()
-	for input := range chIn {
-		output, err := l.GetLink(input)
-		output.Error = err
-		chOut <- output
+	var scoreYear float32 = 0
+	if scoreAnnot > 0 {
+		yr, err := strconv.Atoi(refYear)
+		if err == nil {
+			scoreYear = datamatcher.YearScore(yr, refBest)
+		}
 	}
+	return refBest, scoreAnnot, scoreYear
 }

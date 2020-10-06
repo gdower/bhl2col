@@ -1,79 +1,71 @@
 {
   "Achenium lusitanicum": {
-    "id": 1,
+    "id": "1",
     "name": {
-      "name": "Achenium lusitanicum",
-      "nameType": 1
+      "canonical": "Achenium lusitanicum"
     },
     "reference": {
       "year": "1884"
     }
   },
   "Sagenia longicruris": {
-    "id": 2,
+    "id": "2",
     "name": {
-      "name": "Sagenia longicruris",
-      "nameType": 1
+      "canonical": "Sagenia longicruris"
     },
     "reference": {
       "year": "1906"
     }
   },
   "Hamotus gracilicornis": {
-    "id": 3,
+    "id": "3",
     "name": {
-      "name": "Hamotus gracilicornis",
-      "nameType": 1
+      "canonical": "Hamotus gracilicornis"
     },
     "reference": {
       "year": "1882"
     }
   },
   "Pseudotrochalus niger": {
-    "id": 4,
+    "id": "4",
     "name": {
-      "name": "Pseudotrochalus niger",
-      "nameType": 1
+      "canonical": "Pseudotrochalus niger"
     },
     "reference": {
       "year": "1903"
     }
   },
   "Orthocarpus attenuatus": {
-    "id": 5,
+    "id": "5",
     "name": {
-      "name": "Orthocarpus attenuatus",
-      "nameType": 1
+      "canonical": "Orthocarpus attenuatus"
     },
     "reference": {
       "year": "1857"
     }
   },
   "Cyathea aureonitens": {
-    "id": 6,
+    "id": "6",
     "name": {
-      "name": "Cyathea aureonitens",
-      "nameType": 1
+      "canonical": "Cyathea aureonitens"
     },
     "reference": {
       "year": "1904"
     }
   },
   "Licaria simulans": {
-    "id": 7,
+    "id": "7",
     "name": {
-      "name": "Licaria simulans",
-      "nameType": 1
+      "canonical": "Licaria simulans"
     },
     "reference": {
       "year": "1964"
     }
   },
   "Anthoceros muscoides": {
-    "id": 8,
+    "id": "8",
     "name": {
-      "name": "Anthoceros muscoides",
-      "nameType": 1
+      "canonical": "Anthoceros muscoides"
     },
     "reference": {
       "year": "1884"

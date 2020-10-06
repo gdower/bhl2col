@@ -1,48 +1,39 @@
 package entity
 
-type NameType int
-
-const (
-	FullString NameType = iota
-	CanonicalForm
+import (
+	bhln "github.com/gnames/bhlnames/domain/entity"
 )
 
-func (st NameType) String() string {
-	if int(st) == 0 {
-		return "FullString"
-	} else {
-		return "CanonicalForm"
-	}
-}
-
 type Input struct {
-	ID        int `json:"id"`
+	ID        string `json:"id"`
 	Name      `json:"name"`
 	Reference `json:"reference"`
 }
 
 type Name struct {
-	Name     string `json:"name"`
-	Authors  string `json:"authors"`
-	Year     string `json:"year"`
-	NameType `json:"nameType"`
+	NameString string `json:"nameString,omitempty"`
+	Canonical  string `json:"canonical,omitempty"`
+	Authorship string `json:"authorship,omitempty"`
+	Year       string `json:"year,omitempty"`
 }
 
 type Reference struct {
-	Authors string `json:"authors"`
-	Journal string `json:"journal"`
-	Volume  string `json:"volume"`
-	Pages   string `json:"pages"`
-	Year    string `json:"year"`
+	RefString string `json:"refString,omitempty"`
+	Authors   string `json:"authors,omitempty"`
+	Journal   string `json:"journal,omitempty"`
+	Volume    string `json:"volume,omitempty"`
+	Pages     string `json:"pages,omitempty"`
+	Year      string `json:"year,omitempty"`
 }
 
 type Output struct {
-	InputID      int    `json:"id"`
-	AnnotNomen   string `json:"annotNomen"`
-	EditDistance int    `json:"editDistance"`
-	Error        error  `json:"error"`
-	Name         `json:"name"`
-	BHLlink      `json:"linkBHL"`
+	InputID      string          `json:"id"`
+	InputName    Name            `json:"name"`
+	OutputName   string          `json:"outputName,omitempty"`
+	AnnotNomen   string          `json:"annotNomen,omitempty"`
+	EditDistance int             `json:"editDistance,omitempty"`
+	Error        error           `json:"error,omitempty"`
+	BHLref       *bhln.Reference `json:"referenceBHL"`
 	Score        `json:"score"`
 }
 
