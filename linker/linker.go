@@ -5,16 +5,18 @@ import (
 
 	"github.com/gdower/bhlinker/datamatcher"
 	"github.com/gdower/bhlinker/domain/entity"
+	"github.com/gnames/bhlnames/config"
 	bhln "github.com/gnames/bhlnames/domain/entity"
 )
 
-func BestMatchBHL(input entity.Input, bhlRefs []*bhln.Reference) entity.Output {
+func BestMatchBHL(input entity.Input, nameRefs *bhln.NameRefs) entity.Output {
+	bhlRefs := nameRefs.References
 	year := input.Reference.Year
 	if year == "" {
 		year = input.Name.Year
 	}
 	refBest, score := bestBHLReference(bhlRefs, year)
-	return output(input, refBest, score)
+	return output(input, refBest, nameRefs.Params, score)
 }
 
 func bestBHLReference(bhlRefs []*bhln.Reference, year string) (*bhln.Reference, entity.Score) {
@@ -42,9 +44,9 @@ func bestBHLReference(bhlRefs []*bhln.Reference, year string) (*bhln.Reference, 
 	return refBest, score
 }
 
-func output(input entity.Input, refBest *bhln.Reference, score entity.Score) entity.Output {
+func output(input entity.Input, refBest *bhln.Reference, params config.RefParams, score entity.Score) entity.Output {
 	if refBest == nil {
-		return entity.Output{InputID: input.ID, InputName: input.Name}
+		return entity.Output{InputID: input.ID, InputName: input.Name, Params: params}
 	}
 
 	res := entity.Output{
@@ -52,8 +54,8 @@ func output(input entity.Input, refBest *bhln.Reference, score entity.Score) ent
 		InputName:    input.Name,
 		BHLref:       refBest,
 		Score:        score,
-		AnnotNomen:   refBest.AnnotNomen,
 		EditDistance: refBest.EditDistance,
+		Params:       params,
 	}
 	return res
 }

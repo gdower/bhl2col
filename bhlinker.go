@@ -6,6 +6,7 @@ import (
 	"github.com/gdower/bhlinker/domain/entity"
 	"github.com/gdower/bhlinker/domain/usecase"
 	"github.com/gdower/bhlinker/linker"
+	"github.com/gnames/bhlnames/config"
 )
 
 type BHLinker struct {
@@ -27,11 +28,12 @@ func (l BHLinker) GetLink(input entity.Input) (entity.Output, error) {
 	if name == "" {
 		name = input.Name.NameString
 	}
-	refsBHL, err := l.Refs(name)
+	opts := []config.Option{config.OptNoSynonyms(true)}
+	refsBHL, err := l.Refs(name, opts...)
 	if err != nil {
 		return entity.Output{}, err
 	}
-	return linker.BestMatchBHL(input, refsBHL.References), nil
+	return linker.BestMatchBHL(input, refsBHL), nil
 }
 
 // GetLinks takes a stream of name-strings with their reference data. The

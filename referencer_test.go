@@ -13,7 +13,7 @@ import (
 
 type MockReferencer struct{}
 
-func (mr MockReferencer) Refs(name string) (*bhln.Output, error) {
+func (mr MockReferencer) Refs(name string) (*bhln.NameRefs, error) {
 	mocks := loadOutputMocks()
 	if res, ok := mocks[name]; ok {
 		return res, nil
@@ -32,9 +32,9 @@ func loadNamesMock() []string {
 	return res
 }
 
-func loadOutputMocks() map[string]*bhln.Output {
+func loadOutputMocks() map[string]*bhln.NameRefs {
 	enc := encode.GNjson{}
-	var res map[string]*bhln.Output
+	var res map[string]*bhln.NameRefs
 	path := filepath.Join("testdata", "referencer-mock.json")
 	data, err := ioutil.ReadFile(path)
 	if err != nil {

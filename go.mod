@@ -9,3 +9,4 @@ require (
 	github.com/gosuri/uilive v0.0.4 // indirect
 	gitlab.com/gogna/gnparser v0.14.1
 )
+

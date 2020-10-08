@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"github.com/gnames/bhlnames/config"
 	bhln "github.com/gnames/bhlnames/domain/entity"
 )
 
@@ -30,11 +31,11 @@ type Output struct {
 	InputID      string          `json:"id"`
 	InputName    Name            `json:"name"`
 	OutputName   string          `json:"outputName,omitempty"`
-	AnnotNomen   string          `json:"annotNomen,omitempty"`
 	EditDistance int             `json:"editDistance,omitempty"`
 	Error        error           `json:"error,omitempty"`
 	BHLref       *bhln.Reference `json:"referenceBHL"`
 	Score        `json:"score"`
+	Params       config.RefParams `json:"params"`
 }
 
 type BHLlink struct {

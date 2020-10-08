@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"github.com/gdower/bhlinker/domain/entity"
+	"github.com/gnames/bhlnames/config"
 	bhln "github.com/gnames/bhlnames/domain/entity"
 )
 
@@ -21,5 +22,5 @@ type Plugger interface {
 type Referencer interface {
 	// Refs takes a name-string and returns an BHLnames' output that contains
 	// found BHL references for the name-string.
-	Refs(string) (*bhln.Output, error)
+	Refs(string, ...config.Option) (*bhln.NameRefs, error)
 }
