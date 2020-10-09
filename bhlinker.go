@@ -31,7 +31,11 @@ func (l BHLinker) GetLink(input entity.Input) (entity.Output, error) {
 	opts := []config.Option{config.OptNoSynonyms(true)}
 	refsBHL, err := l.Refs(name, opts...)
 	if err != nil {
-		return entity.Output{}, err
+		out := entity.Output{
+			InputID:   input.ID,
+			InputName: input.Name,
+		}
+		return out, err
 	}
 	return linker.BestMatchBHL(input, refsBHL), nil
 }

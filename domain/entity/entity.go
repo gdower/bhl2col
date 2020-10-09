@@ -38,11 +38,6 @@ type Output struct {
 	Params       config.RefParams `json:"params"`
 }
 
-type BHLlink struct {
-	Link          string `json:"link"`
-	PageImageLink string `json:"pageImageLink"`
-}
-
 type Score struct {
 	Overall float32 `json:"overall"`
 	Annot   float32 `json:"annot"`
