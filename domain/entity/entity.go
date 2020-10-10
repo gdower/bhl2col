@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"github.com/gnames/bhlnames/config"
 	bhln "github.com/gnames/bhlnames/domain/entity"
 )
 
@@ -35,7 +34,6 @@ type Output struct {
 	Error        error           `json:"error,omitempty"`
 	BHLref       *bhln.Reference `json:"referenceBHL"`
 	Score        `json:"score"`
-	Params       config.RefParams `json:"params"`
 }
 
 type Score struct {

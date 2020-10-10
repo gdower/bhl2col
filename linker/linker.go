@@ -5,7 +5,6 @@ import (
 
 	"github.com/gdower/bhlinker/datamatcher"
 	"github.com/gdower/bhlinker/domain/entity"
-	"github.com/gnames/bhlnames/config"
 	bhln "github.com/gnames/bhlnames/domain/entity"
 )
 
@@ -16,7 +15,7 @@ func BestMatchBHL(input entity.Input, nameRefs *bhln.NameRefs) entity.Output {
 		year = input.Name.Year
 	}
 	refBest, score := bestBHLReference(bhlRefs, year)
-	return output(input, refBest, nameRefs.Params, score)
+	return output(input, refBest, score)
 }
 
 func bestBHLReference(bhlRefs []*bhln.Reference, year string) (*bhln.Reference, entity.Score) {
@@ -44,9 +43,9 @@ func bestBHLReference(bhlRefs []*bhln.Reference, year string) (*bhln.Reference, 
 	return refBest, score
 }
 
-func output(input entity.Input, refBest *bhln.Reference, params config.RefParams, score entity.Score) entity.Output {
+func output(input entity.Input, refBest *bhln.Reference, score entity.Score) entity.Output {
 	if refBest == nil {
-		return entity.Output{InputID: input.ID, InputName: input.Name, Params: params}
+		return entity.Output{InputID: input.ID, InputName: input.Name}
 	}
 
 	res := entity.Output{
@@ -55,7 +54,6 @@ func output(input entity.Input, refBest *bhln.Reference, params config.RefParams
 		BHLref:       refBest,
 		Score:        score,
 		EditDistance: refBest.EditDistance,
-		Params:       params,
 	}
 	return res
 }

@@ -8,13 +8,13 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/gnames/bhlnames/refs"
+	bhlent "github.com/gnames/bhlnames/domain/entity"
 	"github.com/gnames/gnames/lib/encode"
 )
 
 type MockReferencer struct{}
 
-func (mr MockReferencer) Refs(name string) (*refs.Output, error) {
+func (mr MockReferencer) Refs(name string) (*bhlent.NameRefs, error) {
 	mocks := loadOutputMocks()
 	if res, ok := mocks[name]; ok {
 		return res, nil
@@ -22,14 +22,11 @@ func (mr MockReferencer) Refs(name string) (*refs.Output, error) {
 	return nil, fmt.Errorf("Unknown name '%s'", name)
 }
 
-func (mr MockReferencer) RefsStream(chIn <-chan string, chOut chan<- *refs.RefsResult) {
+func (mr MockReferencer) RefsStream(chIn <-chan string, chOut chan<- *bhlent.NameRefs) {
 	mocks := loadOutputMocks()
-	mocksStream := make(map[string]*refs.RefsResult)
+	mocksStream := make(map[string]*bhlent.NameRefs)
 	for k, v := range mocks {
-		mocksStream[k] = &refs.RefsResult{
-			Output: v,
-			Error:  nil,
-		}
+		mocksStream[k] = v
 	}
 	var wg sync.WaitGroup
 	wg.Add(1)
@@ -39,7 +36,7 @@ func (mr MockReferencer) RefsStream(chIn <-chan string, chOut chan<- *refs.RefsR
 			if res, ok := mocksStream[name]; ok {
 				chOut <- res
 			} else {
-				chOut <- &refs.RefsResult{Error: fmt.Errorf("Unknown name '%s'", name)}
+				chOut <- &bhlent.NameRefs{NameString: name}
 			}
 		}
 	}()
@@ -58,9 +55,9 @@ func loadNamesMock() []string {
 	return res
 }
 
-func loadOutputMocks() map[string]*refs.Output {
+func loadOutputMocks() map[string]*bhlent.NameRefs {
 	enc := encode.GNjson{}
-	var res map[string]*refs.Output
+	var res map[string]*bhlent.NameRefs
 	path := filepath.Join("..", "testdata", "referencer-mock.json")
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -93,7 +90,7 @@ func TestRefs(t *testing.T) {
 
 func TestRefsStream(t *testing.T) {
 	chIn := make(chan string)
-	chOut := make(chan *refs.RefsResult)
+	chOut := make(chan *bhlent.NameRefs)
 	var wg sync.WaitGroup
 	wg.Add(1)
 	mr := MockReferencer{}
@@ -111,8 +108,8 @@ func TestRefsStream(t *testing.T) {
 			if res == nil {
 				t.Error("Refs stream result is empty")
 			}
-			if len(res.Output.References) == 0 {
-				t.Errorf("No references for %s", res.Output.NameString)
+			if len(res.References) == 0 {
+				t.Errorf("No references for %s", res.NameString)
 			}
 		}
 	}()

@@ -7,13 +7,14 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/gnames/bhlnames/config"
 	bhln "github.com/gnames/bhlnames/domain/entity"
 	"github.com/gnames/gnames/lib/encode"
 )
 
 type MockReferencer struct{}
 
-func (mr MockReferencer) Refs(name string) (*bhln.NameRefs, error) {
+func (mr MockReferencer) Refs(name string, ops ...config.Option) (*bhln.NameRefs, error) {
 	mocks := loadOutputMocks()
 	if res, ok := mocks[name]; ok {
 		return res, nil
