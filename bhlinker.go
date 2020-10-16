@@ -34,6 +34,7 @@ func (l BHLinker) GetLink(input entity.Input) (entity.Output, error) {
 		out := entity.Output{
 			InputID:   input.ID,
 			InputName: input.Name,
+			InputRef:  input.Reference,
 		}
 		return out, err
 	}

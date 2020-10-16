@@ -27,8 +27,9 @@ type Reference struct {
 }
 
 type Output struct {
-	InputID      string          `json:"id"`
-	InputName    Name            `json:"name"`
+	InputID      string          `json:"inputId"`
+	InputName    Name            `json:"inputName"`
+	InputRef     Reference       `json:"inputRef,omitempty"`
 	OutputName   string          `json:"outputName,omitempty"`
 	EditDistance int             `json:"editDistance,omitempty"`
 	Error        error           `json:"error,omitempty"`

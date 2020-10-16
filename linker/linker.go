@@ -51,6 +51,7 @@ func output(input entity.Input, refBest *bhln.Reference, score entity.Score) ent
 	res := entity.Output{
 		InputID:      input.ID,
 		InputName:    input.Name,
+		InputRef:     input.Reference,
 		BHLref:       refBest,
 		Score:        score,
 		EditDistance: refBest.EditDistance,
