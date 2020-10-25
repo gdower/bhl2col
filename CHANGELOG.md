@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## [v0.0.2]
+
+- Add dependency to gnlib, remove dependency on gnames/lib.
+
 ## [v0.0.1]
 
 - Add compatibility with bhlnames v0.0.6
@@ -18,6 +22,7 @@
 
 This document follows [changelog guidelines]
 
+[v0.0.2]: https://github.com/gdower/bhlinker/compare/v0.0.1...v0.0.2
 [v0.0.1]: https://github.com/gdower/bhlinker/compare/v0.0.0...v0.0.1
 
 [#11]: https://github.com/gdower/bhlinker/issues/11
