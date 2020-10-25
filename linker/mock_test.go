@@ -9,7 +9,7 @@ import (
 	"testing"
 
 	bhlent "github.com/gnames/bhlnames/domain/entity"
-	"github.com/gnames/gnames/lib/encode"
+	"github.com/gnames/gnlib/encode"
 )
 
 type MockReferencer struct{}

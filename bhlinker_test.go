@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/gdower/bhlinker/domain/entity"
-	"github.com/gnames/gnames/lib/encode"
+	"github.com/gnames/gnlib/encode"
 )
 
 func loadInputMock() (map[string]entity.Input, error) {
