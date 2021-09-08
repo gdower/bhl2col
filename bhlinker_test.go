@@ -8,11 +8,11 @@ import (
 	"testing"
 
 	"github.com/gdower/bhlinker/domain/entity"
-	"github.com/gnames/gnlib/encode"
+	"github.com/gnames/gnfmt"
 )
 
 func loadInputMock() (map[string]entity.Input, error) {
-	enc := encode.GNjson{}
+	enc := gnfmt.GNjson{}
 	var res map[string]entity.Input
 	path := filepath.Join("testdata", "input-mock.json")
 	data, err := ioutil.ReadFile(path)
@@ -27,7 +27,7 @@ func loadInputMock() (map[string]entity.Input, error) {
 }
 
 func loadOutputMock() (map[string]entity.Output, error) {
-	enc := encode.GNjson{}
+	enc := gnfmt.GNjson{}
 	var res map[string]entity.Output
 	path := filepath.Join("testdata", "output-mock.json")
 	data, err := ioutil.ReadFile(path)

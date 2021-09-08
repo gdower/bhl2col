@@ -9,7 +9,7 @@ import (
 
 	"github.com/gnames/bhlnames/config"
 	bhln "github.com/gnames/bhlnames/domain/entity"
-	"github.com/gnames/gnlib/encode"
+	"github.com/gnames/gnfmt"
 )
 
 type MockReferencer struct{}
@@ -34,7 +34,7 @@ func loadNamesMock() []string {
 }
 
 func loadOutputMocks() map[string]*bhln.NameRefs {
-	enc := encode.GNjson{}
+	enc := gnfmt.GNjson{}
 	var res map[string]*bhln.NameRefs
 	path := filepath.Join("testdata", "referencer-mock.json")
 	data, err := ioutil.ReadFile(path)
