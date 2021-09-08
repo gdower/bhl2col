@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add dependency to gnfmt, remove dependency to gnlib
+
 ## [v0.0.2]
 
 - Add dependency to gnlib, remove dependency on gnames/lib.
