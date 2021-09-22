@@ -4,7 +4,7 @@ import (
 	"strconv"
 
 	"github.com/gdower/bhlinker/datamatcher"
-	"github.com/gdower/bhlinker/domain/entity"
+	entity "github.com/gdower/bhlinker/ent"
 	bhln "github.com/gnames/bhlnames/domain/entity"
 )
 

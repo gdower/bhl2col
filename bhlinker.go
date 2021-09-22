@@ -3,18 +3,17 @@ package bhlinker
 import (
 	"sync"
 
-	"github.com/gdower/bhlinker/domain/entity"
-	"github.com/gdower/bhlinker/domain/usecase"
+	entity "github.com/gdower/bhlinker/ent"
 	"github.com/gdower/bhlinker/linker"
 	"github.com/gnames/bhlnames/config"
 )
 
 type BHLinker struct {
-	usecase.Referencer
+	Referencer
 	JobsNum int
 }
 
-func NewBHLinker(r usecase.Referencer, jobsNum int) BHLinker {
+func NewBHLinker(r Referencer, jobsNum int) BHLinker {
 	return BHLinker{Referencer: r, JobsNum: jobsNum}
 }
 

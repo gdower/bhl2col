@@ -7,7 +7,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/gdower/bhlinker/domain/entity"
+	entity "github.com/gdower/bhlinker/ent"
 	"github.com/gnames/gnfmt"
 )
 

@@ -1,7 +1,7 @@
-package usecase
+package bhlinker
 
 import (
-	"github.com/gdower/bhlinker/domain/entity"
+	entity "github.com/gdower/bhlinker/ent"
 	"github.com/gnames/bhlnames/config"
 	bhln "github.com/gnames/bhlnames/domain/entity"
 )
